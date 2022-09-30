@@ -2,12 +2,9 @@ const eventEmitters = require('events')
 
 const myEmmitter = new eventEmitters()
 
-setImmediate(()=> myEmmitter.emit('NDUBUISI'))
+setImmediate(()=> myEmmitter.emit('name','NDUBUISI'))
 
-myEmmitter.on('NDUBUISI', () =>{
-    console.log('NDUBUISI has been fired')
+myEmmitter.on('name', (data) =>{
+    console.log(`${data} has been fired`)
 })
 
-myEmmitter.on('NDUBUISI', () =>{
-    console.log('NDUBUISI has been fired')
-})
