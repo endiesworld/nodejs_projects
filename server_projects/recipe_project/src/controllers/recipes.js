@@ -92,6 +92,7 @@ const remove = async (req, res, next) => {
 
     await service.remove(req.params.id);
     //  Send a proper status
+    res.status(204)
     } catch (error) {
         next(error);
     }
