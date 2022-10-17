@@ -39,10 +39,14 @@ app.use((req, res, next) => {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-    app.use('/api/v1/recipes', recipesRouter);
+app.get("/", (req, res) => {
+    res.redirect("/api/v1/recipes");
+});
 
-    const port = process.env.PORT || 8080;
+app.use('/api/v1/recipes', recipesRouter);
 
-    app.listen(port, () => {
+const port = process.env.PORT || 8080;
+
+app.listen(port, () => {
     console.log(`Server is up on port ${port}.`);
 });
