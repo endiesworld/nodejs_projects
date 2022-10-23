@@ -1,5 +1,19 @@
 const service = require("../services/recipes");
 
+
+const recipeExists = async (req, res, next) => {
+    const recipe = await service.get(req.params.id);
+
+    if (recipe === undefined) {
+        const err = new Error("Recipe not found");
+        err.statusCode = 404;
+        next(err);
+    } else {
+        res.locals.recipe = recipe;
+        next();
+    }
+};
+
 const getAll = async (req, res, next) => {
     try {
         res.json({ data: await service.getAll() });
@@ -10,15 +24,7 @@ const getAll = async (req, res, next) => {
 
 const get = async (req, res, next) => {
     try {
-    const recipe = await service.get(req.params.id);
-
-    if (recipe === undefined) {
-        const err = new Error("Recipe not found");
-        err.statusCode = 404;
-        throw err;
-    }
-
-    res.json({ data: recipe });
+        res.json({ data:  res.locals.recipe});
     } catch (error) {
         next(error);
     }
@@ -50,14 +56,7 @@ const save = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const recipe = await service.get(req.params.id);
-
-    if (recipe === undefined) {
-        const err = new Error("Recipe not found");
-        err.statusCode = 404;
-        throw err;
-    }
-
+    
     const {
         name,
         healthLabels,
@@ -82,13 +81,6 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
     try {
-    const recipe = await service.get(req.params.id);
-
-    if (recipe === undefined) {
-        const err = new Error("Recipe not found");
-        err.statusCode = 404;
-        throw err;
-    }
 
     await service.remove(req.params.id);
     //  Send a proper status
@@ -100,8 +92,8 @@ const remove = async (req, res, next) => {
 
 module.exports = {
     getAll,
-    get,
+    get: [recipeExists, get],
     save,
-    update,
-    remove,
+    update: [recipeExists, update],
+    remove: [recipeExists, remove],
 };
